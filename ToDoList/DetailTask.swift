@@ -10,83 +10,44 @@ import CoreData
 
 class DetailTask: UIViewController {
 
-    weak var delegate: TaskListDelegate?
-    //var tasks: [Task] = []
     var pageTitle: String = ""
-    var taskText: String = ""
+    var context: NSManagedObjectContext?
     
     @IBOutlet weak var taskTextView: UITextView!
     @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
     
-    private func saveDataInTaskList() {
-        delegate?.saveTaskTitle(withTitle: pageTitle, withText: taskText)
+    private func saveTaskText(withText text: String) {
+        let task = getTaskFromContext(context: self.context!)
+        task.textOfTask = text
+        
+        do {
+            try context?.save()
+        } catch let error as NSError {
+            print(error.localizedDescription)
+        }
     }
     
-    private func saveTaskText(withText text: String) {
-        let context = getContext()
+    private func getTaskFromContext(context: NSManagedObjectContext) -> Task {
         let fetchRequest: NSFetchRequest<Task> = Task.fetchRequest()
-
         if let objects = try? context.fetch(fetchRequest) {
             for obj in objects {
                 if obj.title == pageTitle {
-                    obj.textOfTask = text
+                    return obj
                 }
             }
         }
-        do {
-            try context.save()
-        } catch let error as NSError {
-            print(error.localizedDescription)
-        }
+        return Task()
     }
-    
-    private func getContext() -> NSManagedObjectContext {
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        return appDelegate.persistentContainer.viewContext
-    }
-    private func deleteContextData() {
-        let context = getContext()
-        let fetchRequest: NSFetchRequest<Task> = Task.fetchRequest()
-        
-        if let objects = try? context.fetch(fetchRequest) {
-            for obj in objects {
-                context.delete(obj)
-            }
-        }
-        do {
-            try context.save()
-        } catch let error as NSError {
-            print(error.localizedDescription)
-        }
-    }
-    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        let context = getContext()
-        let fetchRequest: NSFetchRequest<Task> = Task.fetchRequest()
-        
-        if let objects = try? context.fetch(fetchRequest) {
-            for obj in objects {
-                if obj.title == pageTitle {
-                    taskTextView.text = obj.textOfTask
-                }
-            }
-        }
-//        for elem in tasks {
-//            if elem.title == pageTitle {
-//                taskTextView.text = elem.textOfTask
-//            }
-//        }
+        taskTextView.text = getTaskFromContext(context: self.context!).textOfTask
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        //deleteContextData()
         
         navigationController?.viewControllers[1].title = pageTitle
-        taskTextView.text = taskText
         taskTextView.delegate = self
         taskTextView.backgroundColor = view.backgroundColor
         

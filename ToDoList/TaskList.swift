@@ -8,13 +8,10 @@
 import UIKit
 import CoreData
 
-protocol TaskListDelegate: AnyObject {
-    func saveTaskTitle(withTitle title: String, withText text: String)
-}
-
-class TaskList: UITableViewController, TaskListDelegate {
+class TaskList: UITableViewController {
 
     var tasks: [Task] = []
+    lazy var context = (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer.viewContext
     
     @IBAction func saveTaskTitle(_ sender: UIBarButtonItem) {
         let alertController = UIAlertController(title: "New Task",
@@ -24,7 +21,7 @@ class TaskList: UITableViewController, TaskListDelegate {
         let saveAction = UIAlertAction(title: "Save", style: .default) { action in
             let tf = alertController.textFields?.first
             if let newTaskTitle = tf?.text {
-                self.saveTaskTitle(withTitle: newTaskTitle, withText: "")
+                self.saveTaskTitle(withTitle: newTaskTitle)
                 self.tableView.reloadData()
             }
         }
@@ -34,47 +31,29 @@ class TaskList: UITableViewController, TaskListDelegate {
         present(alertController, animated: true, completion: nil)
     }
     
-    internal func saveTaskTitle(withTitle title: String, withText text: String) {
-        let context = getContext()
-        
-        let fetchRequest: NSFetchRequest<Task> = Task.fetchRequest()
-        if let objects = try? context.fetch(fetchRequest) {
-            for obj in objects {
-                if obj.title == title {
-                    obj.textOfTask = text
-                }
-            }
-        }
-        
-        guard let entity = NSEntityDescription.entity(forEntityName: "Task", in: context) else {return}
+    internal func saveTaskTitle(withTitle title: String) {
+        guard let entity = NSEntityDescription.entity(forEntityName: "Task", in: context!) else {return}
         let taskObj = Task(entity: entity, insertInto: context)
         taskObj.title = title
-        taskObj.textOfTask = text
         
         do {
-            try context.save()
+            try context?.save()
             tasks.append(taskObj)
         } catch let error as NSError {
             print(error.localizedDescription)
         }
     }
     
-    private func getContext() -> NSManagedObjectContext {
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        return appDelegate.persistentContainer.viewContext
-    }
-    
     private func deleteContextData() {
-        let context = getContext()
         let fetchRequest: NSFetchRequest<Task> = Task.fetchRequest()
         
-        if let objects = try? context.fetch(fetchRequest) {
+        if let objects = try? context?.fetch(fetchRequest) {
             for obj in objects {
-                context.delete(obj)
+                context?.delete(obj)
             }
         }
         do {
-            try context.save()
+            try context?.save()
         } catch let error as NSError {
             print(error.localizedDescription)
         }
@@ -83,11 +62,10 @@ class TaskList: UITableViewController, TaskListDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        let context = getContext()
         let fetchRequest: NSFetchRequest<Task> = Task.fetchRequest()
         
         do {
-            tasks = try context.fetch(fetchRequest)
+            tasks = try context!.fetch(fetchRequest)
         } catch let error as NSError {
             print(error.localizedDescription)
         }
@@ -112,11 +90,8 @@ class TaskList: UITableViewController, TaskListDelegate {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
-
-        //cell.selectionStyle = .blue
         let task = tasks[indexPath.row]
         cell.textLabel?.text = task.title
-
         return cell
     }
 
@@ -127,8 +102,7 @@ class TaskList: UITableViewController, TaskListDelegate {
         if let indexPath = self.tableView.indexPathForSelectedRow {
             let detailVC = segue.destination as! DetailTask
             detailVC.pageTitle = tasks[indexPath.row].title!
-            detailVC.taskText = tasks[indexPath.row].textOfTask!
-            //detailVC.tasks = tasks
+            detailVC.context = self.context
         }
     }
 }
