@@ -92,6 +92,7 @@ class TaskList: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
         let task = tasks[indexPath.row]
         cell.textLabel?.text = task.title
+        //cell.tag = indexPath.row
         return cell
     }
 
@@ -103,6 +104,7 @@ class TaskList: UITableViewController {
             let detailVC = segue.destination as! DetailTask
             detailVC.pageTitle = tasks[indexPath.row].title!
             detailVC.context = self.context
+            detailVC.currentCell = indexPath.row
         }
     }
 }

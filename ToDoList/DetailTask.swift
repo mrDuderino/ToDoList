@@ -10,6 +10,7 @@ import CoreData
 
 class DetailTask: UIViewController {
 
+    var currentCell: Int = 0
     var pageTitle: String = ""
     var context: NSManagedObjectContext?
     
@@ -19,7 +20,6 @@ class DetailTask: UIViewController {
     private func saveTaskText(withText text: String) {
         let task = getTaskFromContext(context: self.context!)
         task.textOfTask = text
-        
         do {
             try context?.save()
         } catch let error as NSError {
@@ -29,14 +29,8 @@ class DetailTask: UIViewController {
     
     private func getTaskFromContext(context: NSManagedObjectContext) -> Task {
         let fetchRequest: NSFetchRequest<Task> = Task.fetchRequest()
-        if let objects = try? context.fetch(fetchRequest) {
-            for obj in objects {
-                if obj.title == pageTitle {
-                    return obj
-                }
-            }
-        }
-        return Task()
+        let objects = try? context.fetch(fetchRequest)
+        return objects![currentCell]
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
