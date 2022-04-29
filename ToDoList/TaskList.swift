@@ -8,7 +8,11 @@
 import UIKit
 import CoreData
 
-class TaskList: UITableViewController {
+protocol TaskListDelegate: AnyObject {
+    func saveTaskTitle(withTitle title: String, withText text: String)
+}
+
+class TaskList: UITableViewController, TaskListDelegate {
 
     var tasks: [Task] = []
     
@@ -20,7 +24,7 @@ class TaskList: UITableViewController {
         let saveAction = UIAlertAction(title: "Save", style: .default) { action in
             let tf = alertController.textFields?.first
             if let newTaskTitle = tf?.text {
-                self.saveTaskTitle(withTitle: newTaskTitle)
+                self.saveTaskTitle(withTitle: newTaskTitle, withText: "")
                 self.tableView.reloadData()
             }
         }
@@ -30,11 +34,22 @@ class TaskList: UITableViewController {
         present(alertController, animated: true, completion: nil)
     }
     
-    private func saveTaskTitle(withTitle title: String) {
+    internal func saveTaskTitle(withTitle title: String, withText text: String) {
         let context = getContext()
+        
+        let fetchRequest: NSFetchRequest<Task> = Task.fetchRequest()
+        if let objects = try? context.fetch(fetchRequest) {
+            for obj in objects {
+                if obj.title == title {
+                    obj.textOfTask = text
+                }
+            }
+        }
+        
         guard let entity = NSEntityDescription.entity(forEntityName: "Task", in: context) else {return}
         let taskObj = Task(entity: entity, insertInto: context)
         taskObj.title = title
+        taskObj.textOfTask = text
         
         do {
             try context.save()
@@ -82,7 +97,7 @@ class TaskList: UITableViewController {
         super.viewDidLoad()
         
         navigationController?.viewControllers.first?.title = "To-Do List"
-//        deleteContextData()
+        //deleteContextData()
     }
 
     // MARK: - Table view data source
@@ -112,6 +127,8 @@ class TaskList: UITableViewController {
         if let indexPath = self.tableView.indexPathForSelectedRow {
             let detailVC = segue.destination as! DetailTask
             detailVC.pageTitle = tasks[indexPath.row].title!
+            detailVC.taskText = tasks[indexPath.row].textOfTask!
+            //detailVC.tasks = tasks
         }
     }
 }
