@@ -102,7 +102,6 @@ class TaskList: UITableViewController {
         guard segue.identifier == "ShowTaskDetails" else {return}
         if let indexPath = self.tableView.indexPathForSelectedRow {
             let detailVC = segue.destination as! DetailTask
-            detailVC.pageTitle = tasks[indexPath.row].title!
             detailVC.context = self.context
             detailVC.currentCell = indexPath.row
         }

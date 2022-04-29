@@ -11,7 +11,6 @@ import CoreData
 class DetailTask: UIViewController {
 
     var currentCell: Int = 0
-    var pageTitle: String = ""
     var context: NSManagedObjectContext?
     
     @IBOutlet weak var taskTextView: UITextView!
@@ -41,7 +40,7 @@ class DetailTask: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        navigationController?.viewControllers[1].title = pageTitle
+        navigationController?.viewControllers[1].title = getTaskFromContext(context: self.context!).title
         taskTextView.delegate = self
         taskTextView.backgroundColor = view.backgroundColor
         
