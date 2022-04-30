@@ -31,18 +31,32 @@ class DetailTask: UIViewController {
         let objects = try? context.fetch(fetchRequest)
         return objects![currentCell]
     }
+    
+    func setupNavigationBar() {
+        let label = UILabel()
+        label.text = "Detail view"
+        label.font = UIFont(name: "GeezaPro-Bold", size: 18)
+        label.textColor = .systemIndigo
+        
+        navigationItem.titleView = label
+        navigationItem.title = getTaskFromContext(context: self.context!).title
+    }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         taskTextView.text = getTaskFromContext(context: self.context!).textOfTask
+        taskTextView.textColor = .systemIndigo
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        navigationController?.viewControllers[1].title = getTaskFromContext(context: self.context!).title
+
+        setupNavigationBar()
+        view.backgroundColor = .systemYellow
         taskTextView.delegate = self
         taskTextView.backgroundColor = view.backgroundColor
+        taskTextView.layer.cornerRadius = 13
+        taskTextView.font = UIFont(name: "Helvetica", size: 20)
         
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(updateTextView),
@@ -79,6 +93,6 @@ extension DetailTask: UITextViewDelegate {
     func textViewDidEndEditing(_ textView: UITextView) {
         saveTaskText(withText: textView.text)
         textView.backgroundColor = self.view.backgroundColor
-        textView.textColor = .black
+        textView.textColor = .systemIndigo
     }
 }

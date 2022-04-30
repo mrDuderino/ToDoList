@@ -8,7 +8,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--To-Do List-->
+        <!--Task List-->
         <scene sceneID="PGe-Eq-Jvq">
             <objects>
                 <tableViewController id="oPd-8r-Wfi" customClass="TaskList" customModule="ToDoList" customModuleProvider="target" sceneMemberID="viewController">
@@ -18,7 +18,7 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <color key="sectionIndexBackgroundColor" red="0.8704750134" green="0.97915048339999999" blue="1" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" showsReorderControl="YES" indentationWidth="10" reuseIdentifier="Cell" id="013-7g-6Qe">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleAspectFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell" id="013-7g-6Qe">
                                 <rect key="frame" x="0.0" y="44.5" width="414" height="43.5"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="013-7g-6Qe" id="KrF-E7-96P">
@@ -35,19 +35,22 @@
                             <outlet property="delegate" destination="oPd-8r-Wfi" id="iiT-0O-lxn"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="To-Do List" id="Jhz-s7-aLY">
+                    <navigationItem key="navigationItem" id="Jhz-s7-aLY">
                         <barButtonItem key="rightBarButtonItem" style="done" systemItem="add" id="cOf-L9-hbY">
                             <connections>
                                 <action selector="saveTaskTitle:" destination="oPd-8r-Wfi" id="1hY-Ny-QGx"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
+                    <connections>
+                        <outlet property="todoTableView" destination="J3x-E1-Vf1" id="xnZ-og-5xE"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="quT-Gb-301" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1059" y="129"/>
         </scene>
-        <!--Task Name-->
+        <!--Detail Task-->
         <scene sceneID="tne-QT-ifu">
             <objects>
                 <viewController id="BYZ-38-t0r" customClass="DetailTask" customModule="ToDoList" customModuleProvider="target" sceneMemberID="viewController">
@@ -56,7 +59,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="cht-0M-QoG">
-                                <rect key="frame" x="20" y="109" width="374" height="723"/>
+                                <rect key="frame" x="20" y="109" width="374" height="693"/>
                                 <color key="backgroundColor" red="0.8704750134" green="0.97915048339999999" blue="1" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 <color key="textColor" systemColor="labelColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
@@ -66,13 +69,13 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" red="0.87047501337660382" green="0.97915048336300647" blue="1" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                         <constraints>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="cht-0M-QoG" secondAttribute="bottom" constant="30" id="CbX-VS-OSw"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="cht-0M-QoG" secondAttribute="bottom" constant="60" id="CbX-VS-OSw"/>
                             <constraint firstItem="cht-0M-QoG" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="K9H-8T-9DB"/>
                             <constraint firstItem="cht-0M-QoG" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="21" id="Uea-Es-rFB"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="cht-0M-QoG" secondAttribute="trailing" constant="20" id="vka-Q7-zKc"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Task Name" id="Gh1-km-mUA"/>
+                    <navigationItem key="navigationItem" id="Gh1-km-mUA"/>
                     <connections>
                         <outlet property="bottomConstraint" destination="CbX-VS-OSw" id="xX7-Zc-JHv"/>
                         <outlet property="taskTextView" destination="cht-0M-QoG" id="4jL-KZ-gf4"/>

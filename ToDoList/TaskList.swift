@@ -13,6 +13,10 @@ class TaskList: UITableViewController {
     var tasks: [Task] = []
     lazy var context = (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer.viewContext
     
+    
+    @IBOutlet var todoTableView: UITableView!
+    
+    
     @IBAction func saveTaskTitle(_ sender: UIBarButtonItem) {
         let alertController = UIAlertController(title: "New Task",
                                                 message: "Please add a new task title",
@@ -61,7 +65,7 @@ class TaskList: UITableViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+
         let fetchRequest: NSFetchRequest<Task> = Task.fetchRequest()
         
         do {
@@ -74,10 +78,35 @@ class TaskList: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        navigationController?.viewControllers.first?.title = "To-Do List"
+        setupNavigationBar()
+        setupTableView()
         //deleteContextData()
     }
+    
+    func setupNavigationBar() {
+        //navigationController?.viewControllers.first?.title = "To-Do List"
+        let label = UILabel()
+        label.text = "To-Do List"
+        label.font = UIFont(name: "GeezaPro-Bold", size: 30)
+        label.textColor = .systemIndigo
+        navigationItem.titleView = label
+        
+        navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        navigationController?.navigationBar.shadowImage = UIImage()
+        navigationController?.navigationBar.tintColor = .systemIndigo
+        navigationController?.navigationBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.systemIndigo]
+        
+        if #available(iOS 11.0, *) {
+            navigationController?.navigationBar.prefersLargeTitles = true
+        }
+    }
 
+    func setupTableView() {
+        todoTableView.backgroundColor = .systemYellow
+        todoTableView.separatorColor = .systemIndigo
+    }
+    
+    
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -92,7 +121,9 @@ class TaskList: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
         let task = tasks[indexPath.row]
         cell.textLabel?.text = task.title
-        //cell.tag = indexPath.row
+        cell.textLabel?.textColor = .systemIndigo
+        cell.textLabel?.font = UIFont(name: "Baskerville-Bold", size: 20)
+        cell.backgroundColor = .systemYellow
         return cell
     }
 
